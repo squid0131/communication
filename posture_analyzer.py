@@ -247,10 +247,13 @@ class PostureAnalyzer:
 
         score = max(0.0, min(100.0, score))
 
-        # 70点以下からぼかし始める。低いほど強い。
-        blur_strength = 0.0
-        if score < 70:
-            blur_strength = min(1.0, (70 - score) / 55)
+        # 90点以上はぼかしなし、60点以下はほぼ見えない状態。90〜60点の間は線形にぼかす。
+        if score >= 90:
+            blur_strength = 0.0
+        elif score <= 60:
+            blur_strength = 1.0
+        else:
+            blur_strength = (90 - score) / 30
 
         if not reasons:
             reasons.append("姿勢は良好です")
